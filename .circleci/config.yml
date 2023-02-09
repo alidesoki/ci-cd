@@ -69,7 +69,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - run: |
-          chmod a+x smoke-test.sh
+          chmod a+x ./smoke-test.sh
           . ./smoke-test.sh
       
       - destroy_environment
