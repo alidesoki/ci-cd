@@ -21,10 +21,10 @@ jobs:
           name: update-inventory
           command: ./createinvemtory.sh
       
-      - save_cache:
+      - persist_to_workspace:
+          root: ./
           paths:
-            - "./inventory.txt"
-          key: save-inventory-${CIRCLE_WORKFLOW_ID:0:5}
+            - inventory.txt
 
   configure_infrastructure:
     docker:
@@ -38,9 +38,10 @@ jobs:
           name: install ansible
           command: apk add --update ansible
 
-      - restore_cache:
-          keys: 
-            - save-inventory-${CIRCLE_WORKFLOW_ID:0:5}s
+      - attach_workspace:
+          at: ./
+      
+      - run: cat inventory.txt
 
       - run:
           name: run playbook
