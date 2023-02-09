@@ -16,7 +16,7 @@ Resources:
       Tags:
         - Key: Project
           Value: udacity
-ec2ins
+
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
