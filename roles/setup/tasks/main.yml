@@ -1,11 +1,11 @@
 ---
   - name: "update apt packages."
-    become: yes
+    become: true
     apt:
       update_cache: yes
 
   - name: "upgrade packages"
-    become: tyes
+    become: true
     apt:
       upgrade: yes
     
@@ -14,7 +14,7 @@
     apt: 
       name: nodejs
       state: present
-      
+
   - name: install build essential
     become: true
     apt: 
