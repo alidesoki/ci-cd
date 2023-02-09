@@ -1,7 +1,17 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine.
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-
+commands:
+   # Exercise - Rollback
+   destroy_environment:
+     steps:
+       - run:
+           name: Destroy environment
+           # ${CIRCLE_WORKFLOW_ID} is a Built-in environment variable 
+           # ${CIRCLE_WORKFLOW_ID:0:5} takes the first 5 chars of the variable CIRCLE_CI_WORKFLOW_ID 
+           when: on_fail
+           command: |
+             aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7}
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
@@ -29,6 +39,7 @@ jobs:
           root: ./
           paths:
             - inventory.txt
+      - destroy_environment
 
   configure_infrastructure:
     docker:
@@ -50,21 +61,18 @@ jobs:
       - run:
           name: run playbook
           command: ansible-playbook -i inventory.txt main-remote.yml
+      
+      - destroy_environment
   
   smoke-test:
     docker:
       - image: amazon/aws-cli
     steps:
       - run: |
-          aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Project,Values=udacity" --output text > IP.txt
-          URL=`cat IP.txt`:80
-          # Test if website exists
-          if curl -s --head ${URL} 
-          then
-            return 0
-          else
-            return 1
-          fi
+          chmod a+x smoke-test.sh
+          . ./smoke-test.sh
+      
+      - destroy_environment
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
