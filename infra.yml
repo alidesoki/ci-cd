@@ -19,6 +19,11 @@ Resources:
       GroupDescription: Enable SSH access via port 22
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: '22'
-          ToPort: '22'
+          FromPort: 0
+          ToPort: 5000
+          CidrIp: 0.0.0.0/0 
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 5000
           CidrIp: 0.0.0.0/0 
