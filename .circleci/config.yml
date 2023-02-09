@@ -68,9 +68,7 @@ jobs:
     docker:
       - image: amazon/aws-cli
     steps:
-      - run: |
-          chmod a+x ./smoke-test.sh
-          . ./smoke-test.sh
+      - run: . ./smoke-test.sh
       
       - destroy_environment
 
