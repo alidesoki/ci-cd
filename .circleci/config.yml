@@ -50,6 +50,21 @@ jobs:
       - run:
           name: run playbook
           command: ansible-playbook -i inventory.txt main-remote.yml
+  
+  smoke-test:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - run: |
+          aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Project,Values=udacity" --output text > IP.txt
+          URL=`cat IP.txt`:80
+          # Test if website exists
+          if curl -s --head ${URL} 
+          then
+            return 0
+          else
+            return 1
+          fi
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -60,3 +75,6 @@ workflows:
       - configure_infrastructure:
           requires:
             - create-infrastructure
+      - smoke-test:
+          requires:
+            - configure_infrastructure
