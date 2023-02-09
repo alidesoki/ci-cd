@@ -1,0 +1,44 @@
+---
+  - name: "update apt packages."
+    become: yes
+    apt:
+      update_cache: yes
+
+  - name: "upgrade packages"
+    become: tyes
+    apt:
+      upgrade: yes
+    
+  - name: install NodeJs
+    become: true
+    apt: 
+      name: nodejs
+      state: present
+      
+  - name: install build essential
+    become: true
+    apt: 
+      name: build-essential
+      state: present
+  - name: install npm
+    become: true
+    apt: 
+      name: npm
+      state: present
+  - name: install PM2
+    become: true
+    shell: npm install pm2 -g
+      
+  - name: create www directory
+    become: true
+    shell: mkdir ~/web
+  
+  - name: copy index
+    become: true
+    copy:
+      src: index.js
+      dest: ~/web
+
+  - name: start
+    become: true
+    shell: pm2 start ~/web/index.js -f
