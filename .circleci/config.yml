@@ -17,7 +17,15 @@ jobs:
                 --template-file infra.yml \
                 --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
                 --region us-east-1
-  
+      - run: 
+          name: update-inventory
+          command: ./createinvemtory.sh
+      
+      - save_cache:
+          paths:
+            - "./inventory.txt"
+          key: save-inventory
+
   configure_infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -25,10 +33,14 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: [2d:98:5a:0e:eb:d9:9f:f4:13:5c:26:f3:71:21:47:54]
-
+    
       - run:
           name: install ansible
           command: apk add --update ansible
+
+      - restore_cache:
+          keys: 
+            - save-inventory
 
       - run:
           name: run playbook
