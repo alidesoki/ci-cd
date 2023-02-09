@@ -20,7 +20,7 @@ jobs:
       - run:
           name: Install tar utility
           command: yum install -y tar gzip
-          
+
       - run: 
           name: update-inventory
           command: ./createinvemtory.sh
@@ -49,7 +49,7 @@ jobs:
 
       - run:
           name: run playbook
-          command: ansible-playbook -i inventory.txt main-remote.yml
+          command: sudo ansible-playbook -i inventory.txt main-remote.yml
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows

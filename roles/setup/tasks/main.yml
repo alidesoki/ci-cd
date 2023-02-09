@@ -25,6 +25,7 @@
     apt: 
       name: npm
       state: present
+  
   - name: install PM2
     become: true
     shell: npm install pm2 -g
