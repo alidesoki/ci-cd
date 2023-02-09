@@ -24,7 +24,7 @@ jobs:
       - save_cache:
           paths:
             - "./inventory.txt"
-          key: save-inventory
+          key: save-inventory-${CIRCLE_WORKFLOW_ID:0:5}
 
   configure_infrastructure:
     docker:
@@ -40,7 +40,7 @@ jobs:
 
       - restore_cache:
           keys: 
-            - save-inventory
+            - save-inventory-${CIRCLE_WORKFLOW_ID:0:5}s
 
       - run:
           name: run playbook
